@@ -56,6 +56,20 @@ func resourceWorkflowJobTeamplateLaunch() *schema.Resource {
 				Description: "Resource creation will wait for workflow job completion.",
 				ForceNew:    true,
 			},
+			"limit": {
+				Type:        schema.TypeString,
+				Required:    false,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "List of comma delimited hosts to limit workflow job execution. Required ask_limit_on_launch set on workflow_job_template.",
+			},
+			"job_tags": {
+				Type:        schema.TypeString,
+				Required:    false,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "List of comma delimited tags to limit job execution to specific tags. Required ask_tags_on_launch set on job_template.",
+			},
 		},
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(20 * time.Minute),
@@ -88,9 +102,11 @@ func workflowJobTemplateLaunchWait(ctx context.Context, svc *awx.WorkflowJobServ
 	return err
 }
 
-// WorkflokJobTemplateLaunchData provides payload data used by the WorkflowJobTemplateLaunch method
-type WorkflokJobTemplateLaunchData struct {
+// WorkflowJobTemplateLaunchData provides payload data used by the WorkflowJobTemplateLaunch method
+type WorkflowJobTemplateLaunchData struct {
 	ExtraVars string `json:"extra_vars,omitempty"`
+	Limit     string `json:"limit,omitempty"`
+	JobTags   string `json:"job_tags,omitempty"`
 }
 
 func resourceWorkflowJobTeamplateLaunchCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -105,8 +121,10 @@ func resourceWorkflowJobTeamplateLaunchCreate(ctx context.Context, d *schema.Res
 		return buildDiagNotFoundFail("Workflow job template", workflowJobTemplateID, err)
 	}
 
-	data := WorkflokJobTemplateLaunchData{
+	data := WorkflowJobTemplateLaunchData{
 		ExtraVars: d.Get("extra_vars").(string),
+		Limit:     d.Get("limit").(string),
+		JobTags:   d.Get("job_tags").(string),
 	}
 
 	var iData map[string]interface{}

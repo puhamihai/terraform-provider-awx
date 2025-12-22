@@ -61,6 +61,13 @@ func resourceJobTemplateLaunch() *schema.Resource {
 				ForceNew:    true,
 				Description: "List of comma delimited hosts to limit job execution. Required ask_limit_on_launch set on job_template.",
 			},
+			"job_tags": {
+				Type:        schema.TypeString,
+				Required:    false,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "List of comma delimited tags to limit job execution to specific tags. Required tags set on job_template.",
+			},
 			"inventory_id": {
 				Type:        schema.TypeInt,
 				Required:    false,
@@ -117,6 +124,7 @@ func jobTemplateLaunchWait(ctx context.Context, svc *awx.JobService, job *awx.Jo
 // JobTemplateLaunchData provides payload data used by the JobTemplateLaunch method
 type JobTemplateLaunchData struct {
 	Limit       string `json:"limit,omitempty"`
+	JobTags     string `json:"job_tags,omitempty"`
 	InventoryID int    `json:"inventory,omitempty"`
 	ExtraVars   string `json:"extra_vars,omitempty"`
 }
@@ -135,6 +143,7 @@ func resourceJobTemplateLaunchCreate(ctx context.Context, d *schema.ResourceData
 
 	data := JobTemplateLaunchData{
 		Limit:       d.Get("limit").(string),
+		JobTags:     d.Get("job_tags").(string),
 		InventoryID: d.Get("inventory_id").(int),
 		ExtraVars:   d.Get("extra_vars").(string),
 	}
