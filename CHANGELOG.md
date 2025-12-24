@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/puhamihai/terraform-provider-awx/compare/v1.0.0...v1.0.1) (2025-12-24)
+
+
+### Bug Fixes
+
+* minor internal change ([4b7eecb](https://github.com/puhamihai/terraform-provider-awx/commit/4b7eecb405a15b47b8ee819be8d86d25c084b043))
+
 # 1.0.0 (2025-12-22)
 
 
